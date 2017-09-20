@@ -1,14 +1,15 @@
 extern crate chrono;
 extern crate qml;
 
+use std::fs::File;
+use std::io::prelude::*;
 use chrono::prelude::*;
-use chrono::Duration;
 use qml::*;
 
 pub struct Timer {
     start_time: Option<DateTime<Utc>>,
     end_time: Option<DateTime<Utc>>,
-    times: Vec<Duration>,
+    times: Vec<String>,
 }
 
 Q_OBJECT!{
@@ -17,6 +18,7 @@ Q_OBJECT!{
         slots:
             fn start_timer();
             fn end_timer();
+            fn write_times();
         properties:
     }
 }
@@ -33,12 +35,19 @@ impl QTimer {
         match self.start_time {
             Some(start) => {
                 let difference = self.end_time.unwrap().signed_duration_since(start);
-                self.times.push(difference);
-
-                println!("{:?}", self.times);
+                self.times.push(difference.num_milliseconds().to_string());
             }
             None => unreachable!(),
         };
+
+        None
+    }
+
+    fn write_times(&mut self) -> Option<&QVariant> {
+        let mut file = File::create("times.txt").unwrap();
+        let contents = self.times.join("\n");
+
+        file.write_all(contents.as_bytes()).unwrap();
 
         None
     }
@@ -51,11 +60,13 @@ fn main() {
         end_time: None,
         times: vec![],
     };
-    let q_timer = QTimer::new(timer);
+    let mut q_timer = QTimer::new(timer);
 
     engine.set_and_store_property("timer", q_timer.get_qobj());
 
     engine.load_file("view/main.qml");
     engine.exec();
     engine.quit();
+
+    q_timer.write_times();
 }

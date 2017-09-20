@@ -4,11 +4,9 @@ import QtQuick.Layouts 1.1
 import QtQuick.Window 2.1
 
 ApplicationWindow {
-  // width: Screen.desktopAvailableWidth
-  // height: Screen.desktopAvailableHeight
-  width: 400
-  height: 300
-  title: "COSC GUI"
+  width: Screen.desktopAvailableWidth
+  height: Screen.desktopAvailableHeight
+  title: "Timer GUI"
   Component.onCompleted: visible = true
 
   Image {
