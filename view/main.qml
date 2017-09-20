@@ -10,6 +10,11 @@ ApplicationWindow {
   Component.onCompleted: visible = true
 
   Button {
+    anchors.horizontalCenter: parent.horizontalCenter
     text: "Start"
+    onClicked: function() {
+      timer.start_timer()
+      console.log('asdasd')
+    }
   }
 }
