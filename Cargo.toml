@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["Kieran Eglin <kieran.eglin@gmail.com>"]
 
 [dependencies]
+qml = { git = "https://github.com/White-Oak/qml-rust", rev = "d731e336fbd1e713"}
