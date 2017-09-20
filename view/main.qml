@@ -4,6 +4,8 @@ import QtQuick.Layouts 1.1
 import QtQuick.Window 2.1
 
 ApplicationWindow {
+  // width: Screen.desktopAvailableWidth
+  // height: Screen.desktopAvailableHeight
   width: 400
   height: 300
   title: "COSC GUI"
@@ -23,15 +25,63 @@ ApplicationWindow {
     anchors.top: icon.bottom
     onClicked: function() {
       start.enabled = false
-      icon.source = "icons/red.png"
+      icon.source = chooseIcon()
       timer.start_timer()
     }
   }
 
-  Button {
-    text: "End"
-    onClicked: function() {
-      timer.end_timer()
+  Row {
+    spacing: 2
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+
+    Image {
+      source: "icons/red.png"
+      MouseArea {
+        anchors.fill: parent
+        onClicked: endTimer()
+      }
     }
+    Image {
+      source: "icons/yellow.png"
+      MouseArea {
+        anchors.fill: parent
+        onClicked: endTimer()
+      }
+    }
+    Image {
+      source: "icons/green.png"
+      MouseArea {
+        anchors.fill: parent
+        onClicked: endTimer()
+      }
+    }
+    Image {
+      source: "icons/blue.png"
+      MouseArea {
+        anchors.fill: parent
+        onClicked: endTimer()
+      }
+    }
+    Image {
+      source: "icons/purple.png"
+      MouseArea {
+        anchors.fill: parent
+        onClicked: endTimer()
+      }
+    }
+  }
+
+  function endTimer() {
+    start.enabled = true
+    icon.source = ""
+    timer.end_timer()
+  }
+
+  function chooseIcon() {
+    var iconList = ["red", "yellow", "green", "blue", "purple"]
+    var randomIcon = iconList[Math.floor(Math.random() * iconList.length)]
+
+    return "icons/" + randomIcon + ".png"
   }
 }
