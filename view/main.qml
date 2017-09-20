@@ -14,6 +14,8 @@ ApplicationWindow {
     width: 50
     height: 50
     anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+    anchors.topMargin: 30
   }
 
   Button {
@@ -21,6 +23,7 @@ ApplicationWindow {
     text: "Start"
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: icon.bottom
+    anchors.topMargin: 30
     onClicked: function() {
       start.enabled = false
       icon.source = chooseIcon()
@@ -31,6 +34,7 @@ ApplicationWindow {
   Row {
     spacing: 2
     anchors.bottom: parent.bottom
+    anchors.bottomMargin: 30
     anchors.horizontalCenter: parent.horizontalCenter
 
     Image {
