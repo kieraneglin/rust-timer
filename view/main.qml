@@ -9,12 +9,29 @@ ApplicationWindow {
   title: "COSC GUI"
   Component.onCompleted: visible = true
 
-  Button {
+  Image {
+    id: icon
+    width: 50
+    height: 50
     anchors.horizontalCenter: parent.horizontalCenter
+  }
+
+  Button {
+    id: start
     text: "Start"
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: icon.bottom
     onClicked: function() {
+      start.enabled = false
+      icon.source = "icons/red.png"
       timer.start_timer()
-      console.log('asdasd')
+    }
+  }
+
+  Button {
+    text: "End"
+    onClicked: function() {
+      timer.end_timer()
     }
   }
 }

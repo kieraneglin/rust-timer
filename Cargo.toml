@@ -5,3 +5,4 @@ authors = ["Kieran Eglin <kieran.eglin@gmail.com>"]
 
 [dependencies]
 qml = { git = "https://github.com/White-Oak/qml-rust", rev = "d731e336fbd1e713"}
+chrono = "0.4"
