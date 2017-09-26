@@ -37,51 +37,30 @@ ApplicationWindow {
     anchors.bottomMargin: 30
     anchors.horizontalCenter: parent.horizontalCenter
 
-    Image {
-      source: "icons/red.png"
-      MouseArea {
-        anchors.fill: parent
-        onClicked: endTimer()
-      }
-    }
-    Image {
-      source: "icons/yellow.png"
-      MouseArea {
-        anchors.fill: parent
-        onClicked: endTimer()
-      }
-    }
-    Image {
-      source: "icons/green.png"
-      MouseArea {
-        anchors.fill: parent
-        onClicked: endTimer()
-      }
-    }
-    Image {
-      source: "icons/blue.png"
-      MouseArea {
-        anchors.fill: parent
-        onClicked: endTimer()
-      }
-    }
-    Image {
-      source: "icons/purple.png"
-      MouseArea {
-        anchors.fill: parent
-        onClicked: endTimer()
+    Repeater {
+      model: iconColors().length
+      Image {
+        source: "icons/" + iconColors()[index] + ".png"
+        MouseArea {
+          anchors.fill: parent
+          onClicked: endTimer()
+        }
       }
     }
   }
 
   function endTimer() {
+    timer.end_timer() // from Rust
     start.enabled = true
     icon.source = ""
-    timer.end_timer()
+  }
+
+  function iconColors() {
+    return ["red", "yellow", "green", "blue", "purple"]
   }
 
   function chooseIcon() {
-    var iconList = ["red", "yellow", "green", "blue", "purple"]
+    var iconList = iconColors()
     var randomIcon = iconList[Math.floor(Math.random() * iconList.length)]
 
     return "icons/" + randomIcon + ".png"
