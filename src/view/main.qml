@@ -9,10 +9,12 @@ ApplicationWindow {
   title: "Timer GUI"
   Component.onCompleted: visible = true
 
-  Image {
+  Rectangle {
     id: icon
     width: 50
     height: 50
+    visible: false
+
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: 30
@@ -24,9 +26,11 @@ ApplicationWindow {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: icon.bottom
     anchors.topMargin: 30
+
     onClicked: function() {
       start.enabled = false
-      icon.source = chooseIcon()
+      icon.visible = true
+      icon.color = randomIcon()
       timer.start_timer() // from Rust
     }
   }
@@ -53,17 +57,21 @@ ApplicationWindow {
 
     Repeater {
       model: iconColors()
-      Image {
-        source: "icons/" + modelData + ".png"
-        width: 50 * pseudoScale
+      Item {
+        width: 55 * pseudoScale
         height: width
         anchors.bottom: parent.bottom
         property real pseudoScale: {
           if (row.current == -1) return 1
           else {
-            var diff = Math.abs(index - row.current)
-            return (Math.max(0, row.falloff - diff) / row.falloff) * row.scaleFactor + 1
+            return (Math.max(0, row.falloff - Math.abs(index - row.current)) / row.falloff) * row.scaleFactor + 1
           }
+        }
+        Rectangle {
+          width: 50 * parent.pseudoScale
+          height: width
+          color: modelData
+          anchors.bottom: parent.bottom
         }
         MouseArea {
           id: mouseArea
@@ -74,7 +82,7 @@ ApplicationWindow {
         }
         Behavior on pseudoScale {
           PropertyAnimation {
-            duration: 150
+            duration: 100
           }
         }
       }
@@ -86,17 +94,15 @@ ApplicationWindow {
 
     counter.attempts++
     start.enabled = true
-    icon.source = ""
+    icon.color = ""
+    icon.visible = false
   }
 
   function iconColors() {
     return ["red", "yellow", "green", "blue", "purple"]
   }
 
-  function chooseIcon() {
-    var iconList = iconColors()
-    var randomIcon = iconList[Math.floor(Math.random() * iconList.length)]
-
-    return "icons/" + randomIcon + ".png"
+  function randomIcon() {
+    return iconColors()[Math.floor(Math.random() * iconColors().length)]
   }
 }

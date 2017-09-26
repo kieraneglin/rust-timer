@@ -64,7 +64,7 @@ fn main() {
 
     engine.set_and_store_property("timer", q_timer.get_qobj());
 
-    engine.load_file("view/main.qml");
+    engine.load_data(include_str!("view/main.qml"));
     engine.exec();
     engine.quit();
 
