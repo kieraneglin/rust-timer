@@ -42,18 +42,40 @@ ApplicationWindow {
   }
 
   Row {
-    spacing: 2
+    id: row
     anchors.bottom: parent.bottom
     anchors.bottomMargin: 30
     anchors.horizontalCenter: parent.horizontalCenter
 
+    property int falloff: 3 // how many adjacent elements are affected
+    property int current: -1
+    property real scaleFactor: .75 // that's how much extra it scales
+
     Repeater {
       model: iconColors()
       Image {
-        source: "icons/" + iconColors()[index] + ".png"
+        source: "icons/" + modelData + ".png"
+        width: 50 * pseudoScale
+        height: width
+        anchors.bottom: parent.bottom
+        property real pseudoScale: {
+          if (row.current == -1) return 1
+          else {
+            var diff = Math.abs(index - row.current)
+            return (Math.max(0, row.falloff - diff) / row.falloff) * row.scaleFactor + 1
+          }
+        }
         MouseArea {
+          id: mouseArea
           anchors.fill: parent
+          hoverEnabled: true
+          onContainsMouseChanged: row.current = containsMouse ? index : -1
           onClicked: endTimer()
+        }
+        Behavior on pseudoScale {
+          PropertyAnimation {
+            duration: 150
+          }
         }
       }
     }
