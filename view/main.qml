@@ -27,8 +27,18 @@ ApplicationWindow {
     onClicked: function() {
       start.enabled = false
       icon.source = chooseIcon()
-      timer.start_timer()
+      timer.start_timer() // from Rust
     }
+  }
+
+  Text {
+    property int attempts: 0
+    text: attempts + "/50 attempts"
+
+    id: counter
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: start.bottom
+    anchors.topMargin: 30
   }
 
   Row {
@@ -38,7 +48,7 @@ ApplicationWindow {
     anchors.horizontalCenter: parent.horizontalCenter
 
     Repeater {
-      model: iconColors().length
+      model: iconColors()
       Image {
         source: "icons/" + iconColors()[index] + ".png"
         MouseArea {
@@ -51,6 +61,8 @@ ApplicationWindow {
 
   function endTimer() {
     timer.end_timer() // from Rust
+
+    counter.attempts++
     start.enabled = true
     icon.source = ""
   }
