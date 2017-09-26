@@ -14,6 +14,7 @@ ApplicationWindow {
     width: 50
     height: 50
     visible: false
+    property int colorIndex
 
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
@@ -30,7 +31,8 @@ ApplicationWindow {
     onClicked: function() {
       start.enabled = false
       icon.visible = true
-      icon.color = randomIcon()
+      icon.colorIndex = randomIcon()
+      icon.color = iconColors()[icon.colorIndex]
       timer.start_timer() // from Rust
     }
   }
@@ -78,7 +80,7 @@ ApplicationWindow {
           anchors.fill: parent
           hoverEnabled: true
           onContainsMouseChanged: row.current = containsMouse ? index : -1
-          onClicked: endTimer()
+          onClicked: endTimer(index)
         }
         Behavior on pseudoScale {
           PropertyAnimation {
@@ -89,10 +91,20 @@ ApplicationWindow {
     }
   }
 
-  function endTimer() {
-    timer.end_timer() // from Rust
+  function endTimer(index) {
+    if(icon.visible) {
+      timer.end_timer(formatColors(index)) // from Rust
+      counter.attempts++
 
-    counter.attempts++
+      resetIcons()
+    }
+  }
+
+  function formatColors(index) {
+    return iconColors()[index] + ", " + iconColors()[icon.colorIndex]
+  }
+
+  function resetIcons() {
     start.enabled = true
     icon.color = ""
     icon.visible = false
@@ -103,6 +115,6 @@ ApplicationWindow {
   }
 
   function randomIcon() {
-    return iconColors()[Math.floor(Math.random() * iconColors().length)]
+    return Math.floor(Math.random() * iconColors().length)
   }
 }
