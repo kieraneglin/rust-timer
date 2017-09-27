@@ -39,7 +39,7 @@ ApplicationWindow {
     onClicked: function() {
       start.enabled = false
       icon.visible = true
-      icon.color = icon.colorList[counter.attempts % icon.colorList.length] // We loop around in the array if attempts > number of colors
+      icon.color = icon.colorList[counter.attempts]
       timer.start_timer() // from Rust
     }
   }
@@ -112,9 +112,9 @@ ApplicationWindow {
   }
 
   function resetIcons() {
-    start.enabled = true
+    start.enabled = counter.attempts >= 50 ? false : true
     icon.color = ""
-    icon.visible = false
+    icon.visible = !start.enabled
   }
 
   function iconColors() {
