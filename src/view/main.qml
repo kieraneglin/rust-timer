@@ -8,6 +8,11 @@ ApplicationWindow {
   height: Screen.desktopAvailableHeight
   title: "Timer GUI"
   Component.onCompleted: visible = true
+  onClosing: {
+    if(icon.visible) {
+      timer.end_timer(icon.colorList[counter.attempts] + ", undefined") // in case the user closes mid-run
+    }
+  }
 
   Rectangle {
     id: icon
@@ -15,10 +20,13 @@ ApplicationWindow {
     height: 50
     visible: false
     property int colorIndex
+    property variant colorList
 
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: parent.top
     anchors.topMargin: 30
+
+    Component.onCompleted: colorList = generateColorList()
   }
 
   Button {
@@ -31,17 +39,16 @@ ApplicationWindow {
     onClicked: function() {
       start.enabled = false
       icon.visible = true
-      icon.colorIndex = randomIcon()
-      icon.color = iconColors()[icon.colorIndex]
+      icon.color = icon.colorList[counter.attempts % icon.colorList.length] // We loop around in the array if attempts > number of colors
       timer.start_timer() // from Rust
     }
   }
 
   Text {
+    id: counter
     property int attempts: 0
     text: attempts + "/50 attempts"
 
-    id: counter
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.top: start.bottom
     anchors.topMargin: 30
@@ -101,7 +108,7 @@ ApplicationWindow {
   }
 
   function formatColors(index) {
-    return iconColors()[index] + ", " + iconColors()[icon.colorIndex]
+    return icon.colorList[counter.attempts] + ", " + iconColors()[index]
   }
 
   function resetIcons() {
@@ -114,7 +121,26 @@ ApplicationWindow {
     return ["red", "yellow", "green", "blue", "purple"]
   }
 
-  function randomIcon() {
-    return Math.floor(Math.random() * iconColors().length)
+  function generateColorList() {
+    var result = (Array(11).join(iconColors() + ",")).split(",") // hackerman.gif
+    result.pop() // hackerman2.png
+
+    return shuffle(result)
+  }
+
+  function shuffle(array) { // Fisher-Yates
+    var counter = array.length
+
+    while (counter > 0) {
+      var index = Math.floor(Math.random() * counter)
+
+      counter--;
+
+      var temp = array[counter]
+      array[counter] = array[index]
+      array[index] = temp
+    }
+
+    return array;
   }
 }

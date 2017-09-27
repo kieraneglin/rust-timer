@@ -47,7 +47,7 @@ impl QTimer {
 
     fn write_history(&mut self) -> Option<&QVariant> {
         let mut file = File::create("times.txt").unwrap();
-        let mut contents: Vec<String> = vec!["time, choice, actual".to_owned()];
+        let mut contents: Vec<String> = vec!["time, actual, choice".to_owned()];
 
         for entry in self.history.iter() {
             contents.push(entry.join(", "));
